@@ -34,7 +34,7 @@ export default {
 	modules: [
 		// https://go.nuxtjs.dev/axios
 		'@nuxtjs/axios',
-		['vue-scichart/nuxt', { key: process.env.SCICHART_KEY }],
+		['vue-scichart/nuxt', { key: process.env.SCICHART_KEY || '' }],
 	],
 
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
