@@ -1,5 +1,5 @@
 export default {
-	target: 'static',
+	ssr: 'true',
 	// Global page headers: https://go.nuxtjs.dev/config-head
 	head: {
 		title: 'example-nuxt-scichart',
@@ -18,7 +18,7 @@ export default {
 	css: [],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
-	components: true,
+	components: ['~/components'],
 
 	publicRuntimeConfig: {
 		scichart: process.env.SCICHART_KEY,
@@ -28,20 +28,35 @@ export default {
 	buildModules: [
 		// https://go.nuxtjs.dev/eslint
 		'@nuxtjs/eslint-module',
+		'@nuxtjs/date-fns',
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
 	modules: [
 		// https://go.nuxtjs.dev/axios
 		'@nuxtjs/axios',
-		['vue-scichart/nuxt', { key: process.env.SCICHART_KEY || '' }],
+		'vue-scichart/nuxt',
 	],
 
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {},
 
+	/*
+	 ** Vue-Scichart key
+	 */
+	scichart: {
+		key: process.env.NUXT_ENV_SCICHART_KEY,
+	},
+
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {
+		postcss: {
+			preset: {
+				features: {
+					customProperties: false,
+				},
+			},
+		},
 		transpile: ['vue-scichart'],
 	},
 }
