@@ -1,71 +1,121 @@
 <template>
 	<div class="container">
-		<h2>Simple Line Chart</h2>
-		<line-chart
-			chart-id="lineChartSimple"
-			styles="margin:0 auto;"
-			type="line"
-			ref="lineChartSimple"
-			@init="init"
+		<h2>bubble chart</h2>
+		<bubble-chart
+			ref="simpleChart"
+			type="bubble"
+			chart-id="simpleChart"
+			styles="margin:0 auto; height: 300px;"
 			:options="options"
-			style="width: 100%; height: 600px; margin: 0 auto"
+			@init="init"
 		/>
 		<p>By <a href="www.pedropcruz.pt" target="_blank">Pedro Cruz</a></p>
 	</div>
 </template>
 
 <script>
-import { LineChart } from 'vue-scichart'
+/* eslint-disable no-loss-of-precision */
+import { BubbleChart } from 'vue-scichart'
 
 export default {
 	components: {
-		LineChart,
+		BubbleChart,
 	},
 	data: () => ({
+		xArr: [
+			8.525709936735955,
+			7.2738658635690046,
+			4.677323387060965,
+			4.953211358871736,
+			5.99540383970891,
+			6.994768920669962,
+			7,
+			7.994925262963647,
+			8,
+			8,
+			8.995063030244932,
+			9,
+			9.990599123234292,
+			10,
+			10,
+			10,
+			10,
+			10,
+			10,
+			9.014578254509996,
+		],
+		yArr: [
+			79.54219055175781,
+			79.630859375,
+			85.94464111328125,
+			80.73989868164062,
+			78.99478149414062,
+			79.5733642578125,
+			78.49017333984375,
+			82.376953125,
+			80.1502685546875,
+			78.03790283203125,
+			78.00262451171875,
+			76.10986328125,
+			75.77880859375,
+			78.6217041015625,
+			74.41259765625,
+			77.733154296875,
+			75.0433349609375,
+			75.1181640625,
+			75.34423828125,
+			75.2998046875,
+		],
+		bubbleSize: 16,
 		options: {
-			annotations: {
-				line: {
-					stroke: '#FF6600',
-					strokeThickness: 3,
-					x1: 1.0,
-					x2: 4.0,
-					y1: 6.0,
-					y2: 9.0,
+			yAxes: {
+				axisTitle: 'Lap Time',
+				growBy: [0.2, 0.2],
+				axisTitleStyle: {
+					fontSize: 16,
+				},
+				axisAlignment: 'left',
+			},
+			xAxes: {
+				axisTitle: 'Average Regeneration Mode',
+				axisTitleStyle: {
+					fontSize: 16,
 				},
 			},
-			lineChartOptions: {
-				stroke: '#ff6600',
-				strokeThickness: 5,
+			bubbleChartOptions: {
+				key: 'ellipse',
+				pointMarker: {
+					width: 24,
+					height: 24,
+					strokeThickness: 0,
+				},
 			},
 			modifiers: {
-				zoomPan: {
-					isEnabled: true,
-				},
 				mouseWheelZoom: {
-					isEnabled: true,
+					xyDirection: 0,
+				},
+				zoomPan: {
+					xyDirection: 0,
+				},
+				rollover: {
+					rolloverLineStroke: '#f70f1c',
+					showTooltip: false,
 				},
 			},
 		},
 	}),
 	methods: {
 		init() {
-			const { appendData, lineSeries } = this.$refs.lineChartSimple
+			const { appendRangeData, zoomExtents } = this.$refs.simpleChart
+			const zValues = []
 
-			for (let i = 0; i < 100; i++) {
-				appendData(i, Math.sin(i * 0.1))
+			for (let i = 0; i < this.xArr.length; i++) {
+				zValues.push(this.bubbleSize)
 			}
 
-			lineSeries.createGradient(
-				[0, 0],
-				[1, 1],
-				[
-					{ color: 'red', offset: 0 },
-					{ color: 'pink', offset: 0.2 },
-					{ color: 'yellow', offset: 0.5 },
-					{ color: 'purple', offset: 0.7 },
-					{ color: 'green', offset: 1 },
-				]
-			)
+			appendRangeData(this.xArr, this.yArr, zValues)
+
+			zoomExtents()
 		},
 	},
 }
