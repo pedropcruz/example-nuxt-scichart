@@ -83,6 +83,7 @@ export default {
 				},
 			},
 			bubbleChartOptions: {
+				isSorted: false,
 				key: 'ellipse',
 				pointMarker: {
 					width: 24,
