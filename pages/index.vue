@@ -9,6 +9,11 @@
 			:options="options"
 			@init="init"
 		/>
+		<div v-for="(legend, i) in legendData" :key="`legend_${i}`" class="legend">
+			<p>
+				<strong>{{ legend.label }}</strong> {{ legend.value }}
+			</p>
+		</div>
 		<p>By <a href="www.pedropcruz.pt" target="_blank">Pedro Cruz</a></p>
 	</div>
 </template>
@@ -22,6 +27,7 @@ export default {
 		BubbleChart,
 	},
 	data: () => ({
+		legendData: [],
 		xArr: [
 			8.525709936735955,
 			7.2738658635690046,
@@ -75,15 +81,17 @@ export default {
 					fontSize: 16,
 				},
 				axisAlignment: 'left',
+				autoRange: 'Always',
 			},
 			xAxes: {
 				axisTitle: 'Average Regeneration Mode',
 				axisTitleStyle: {
 					fontSize: 16,
 				},
+				autoRange: 'Once',
 			},
 			bubbleChartOptions: {
-				isSorted: false,
+				// Here I'm ading on FastBubbleRenderableSeries
 				key: 'ellipse',
 				pointMarker: {
 					width: 24,
@@ -106,15 +114,56 @@ export default {
 		},
 	}),
 	methods: {
-		init() {
-			const { appendRangeData, zoomExtents } = this.$refs.simpleChart
+		async init() {
+			const {
+				zoomExtents,
+				setFastBubbleRenderableSeries,
+				getDataSeries,
+				renderChart,
+			} = this.$refs.simpleChart
 			const zValues = []
 
 			for (let i = 0; i < this.xArr.length; i++) {
 				zValues.push(this.bubbleSize)
 			}
 
-			appendRangeData(this.xArr, this.yArr, zValues)
+			const dataSeries = await getDataSeries('bubble', {
+				isSorted: false,
+				xValues: this.xArr,
+				yValues: this.yArr,
+				zValues,
+			})
+
+			dataSeries.isSorted = false
+
+			const bubbleRenderable = await setFastBubbleRenderableSeries({
+				dataSeries,
+				...this.options.bubbleChartOptions,
+			})
+
+			bubbleRenderable.rolloverModifierProps.tooltipLegendTemplate = (
+				_tooltipProps,
+				seriesInfo
+			) => {
+				if (!seriesInfo.isWithinDataBounds) {
+					return `<svg></svg>`
+				}
+
+				this.legendData = [
+					{
+						label: 'Lap Time: ',
+						value: seriesInfo.formattedYValue,
+					},
+					{
+						label: 'Average Regeneration Mode: ',
+						value: seriesInfo.formattedXValue,
+					},
+				]
+
+				return `<svg></svg>`
+			}
+
+			renderChart(bubbleRenderable)
 
 			zoomExtents()
 		},
