@@ -76,7 +76,7 @@ export default {
 		options: {
 			yAxes: {
 				axisTitle: 'Lap Time',
-				growBy: [0.2, 0.2],
+				growBy: [0.36, 0.36],
 				axisTitleStyle: {
 					fontSize: 16,
 				},
@@ -85,6 +85,7 @@ export default {
 			},
 			xAxes: {
 				axisTitle: 'Average Regeneration Mode',
+				growBy: [0.36, 0.36],
 				axisTitleStyle: {
 					fontSize: 16,
 				},
